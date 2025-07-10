@@ -1,0 +1,7 @@
+// src/api/submitAnonymousReport.js
+import axios from "axios";
+
+export default async function submitAnonymousReport(data) {
+  const response = await axios.post("/api/reports/anonymous", data);
+  return response.data;
+}

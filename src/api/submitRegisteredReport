@@ -1,0 +1,11 @@
+// src/api/submitRegisteredReport.js
+import axios from "axios";
+
+export default async function submitRegisteredReport(data, token) {
+  const response = await axios.post("/api/reports/registered", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
