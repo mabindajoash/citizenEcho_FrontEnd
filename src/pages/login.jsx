@@ -20,9 +20,9 @@ export default function AdminLogin() {
       console.log("Login response:", response.data);
       if (response.status === 200) {
         localStorage.setItem("email", JSON.stringify(response.data.user.email));
+        sessionStorage.setItem("role", response.data.user.role);
         localStorage.setItem("userId", JSON.stringify(response.data.user.id));
         localStorage.setItem("role", response.data.user.role);
-        console.log("User role:", response.data.user.role);
 
         if (response.data.user.role === "investigator") {
           navigate("/admin", { replace: true });

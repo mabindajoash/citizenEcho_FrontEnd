@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import { FaSketch, FaSignsPost } from "react-icons/fa6";
+import { FaPersonHalfDress } from "react-icons/fa6";
 import { BiSolidLogOutCircle } from "react-icons/bi";
 
 export default function Sidebar() {
@@ -40,6 +41,16 @@ export default function Sidebar() {
         >
           <FaSignsPost className="mr-2" />
           Reports
+        </Link>
+
+        <Link
+          to="/admin/users"
+          className={`flex items-center p-2 rounded hover:bg-gray-700 ${
+            isActive("/admin/users") ? "bg-gray-700" : ""
+          }`}
+        >
+          <FaPersonHalfDress className="mr-2" />
+          Users
         </Link>
 
         <Link

@@ -1,7 +1,7 @@
 // src/api/submitAnonymousReport.js
 import axios from "axios";
 
-export default async function submitAnonymousReport(data) {
-  const response = await axios.post("/api/reports/anonymous", data);
+export default async function submitAnonymousReport(data: any) {
+  const response = await axios.post("http://localhost:5000/api/reports", data);
   return response.data;
 }

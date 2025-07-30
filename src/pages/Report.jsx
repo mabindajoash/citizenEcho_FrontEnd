@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import submitAnonymousReport from "../api/submitAnonymousReport";
-import submitRegisteredReport from "../api/submitRegisteredReport";
+import axios from "axios";
 
 export default function Report() {
-  const navigate = useNavigate();  // ✅ move this inside the component
+  const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("anonymous");
 
   // Anonymous form state
-  const [anonData, setAnonData] = useState({ subject: "", description: "" });
+  const [anonData, setAnonData] = useState({ title: "", description: "" });
 
   // Registered form state
   const [regData, setRegData] = useState({ subject: "", description: "" });
@@ -17,10 +16,19 @@ export default function Report() {
   const handleAnonSubmit = async (e) => {
     e.preventDefault();
     try {
-      await submitAnonymousReport(anonData);
-      alert("Anonymous report submitted successfully");
+      const response = await axios.post("http://localhost:5000/api/reports", JSON.stringify(anonData), {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Anonymous report submitted:", response.data);
+      if (response.status === 201) {
+        setAnonData({ title: "", description: "" });
+        alert("Anonymous report submitted successfully");
+      } else {
+        alert("Failed to submit anonymous report");
+      }
     } catch (err) {
-      alert("Failed to submit anonymous report");
+      console.error("Error submitting anonymous report:", err);
+      alert("An error occurred while submitting the report");
     }
   };
 
@@ -57,8 +65,8 @@ export default function Report() {
           <input
             type="text"
             placeholder="Subject"
-            value={anonData.subject}
-            onChange={(e) => setAnonData({ ...anonData, subject: e.target.value })}
+            value={anonData.title}
+            onChange={(e) => setAnonData({ ...anonData, title: e.target.value })}
             className="w-full p-2 border rounded"
           />
           <textarea

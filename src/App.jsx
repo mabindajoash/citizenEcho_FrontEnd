@@ -22,11 +22,12 @@ import Dashboard from "./pages/Dashboard";
 import Reports from "./Admin/Reports";
 import ViewReport from "./Admin/ViewReport";
 import Register from "./pages/register";
+import Users from "./Admin/Users";
 
 export default function App() {
   
   function AdminRoute({ children }) {
-    const role = localStorage.getItem("role");
+    const role = sessionStorage.getItem("role");
     return role === "investigator" ? children : <Navigate to="/login" replace />;
   }
 
@@ -57,7 +58,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/resources" element={<Blog />} />
             <Route path="/aboutus" element={<Aboutus />} />
-            <Route path="/contactus" element={<Contactus />} />
+            <Route path="/contactus" element={<Contactus />} />       
             <Route
               path="/admin/*"
               element={
@@ -69,6 +70,7 @@ export default function App() {
               <Route index element={<Admin />} />
               <Route path="inquiries" element={<Inquiries />} />
               <Route path="reports" element={<Reports />} />
+              <Route path="users" element={<Users />} />
               <Route path="reports/:id" element={<ViewReport />} />
               <Route path="posts" element={<Posts />} />
               <Route path="inquiries/:id" element={<InquiryView />} />

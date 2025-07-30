@@ -1,11 +1,41 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 
 export default function AdminHome() {
-  const investigator = {
-    name: 'Joash Mabinda',
-    email: 'joash@example.com',
-    role: 'Lead Investigator',
+  const [investigator, setInvestigator] = useState({});
+  const [cases, setCases] = useState([]);
+  const [error, setError] = useState(null);
+
+
+  const fetchCases = async () => {
+    try {
+      const userId = JSON.parse(localStorage.getItem("userId"));
+      const response = await axios.get(`http://localhost:5000/api/users/${userId}/assigned-reports`);
+      console.log("Cases response:", response.data);
+      setCases(response.data);
+    } catch (error) {
+      console.error("Error fetching cases:", error);
+      setError("Failed to load cases.");
+    }
   };
+  useEffect(() => {
+    fetchCases();
+  }, []);
+
+  const fetchInvestigator = async () => {
+    const userId = JSON.parse(localStorage.getItem("userId"));
+
+    try {
+      const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
+      setInvestigator(response.data);
+    } catch (error) {
+      console.error("Error fetching investigator data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvestigator();
+  }, []);
 
   const stats = [
     { label: 'Total Cases', value: 24 },
@@ -13,11 +43,6 @@ export default function AdminHome() {
     { label: 'Resolved Cases', value: 17 },
   ];
 
-  const cases = [
-    { id: 101, title: 'Misuse of Funds', status: 'Under Review', date: '2025-06-01' },
-    { id: 102, title: 'Unlawful Dismissal', status: 'Under Review', date: '2025-06-05' },
-    { id: 103, title: 'Bribery Complaint', status: 'Under Review', date: '2025-06-07' },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -36,17 +61,25 @@ export default function AdminHome() {
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        {stats.map((stat, index) => (
-          <div key={index} className="bg-white p-4 shadow rounded-lg text-center">
-            <p className="text-2xl font-bold">{stat.value}</p>
-            <p className="text-sm text-gray-600">{stat.label}</p>
+        
+          <div className="bg-white p-4 shadow rounded-lg text-center">
+            <p className="text-2xl font-bold text-gray-500">Total Cases</p>
+            <p className="text-2xl font-bold">{cases.length}</p>
           </div>
-        ))}
+          <div className="bg-white p-4 shadow rounded-lg text-center">
+            <p className="text-2xl font-bold text-gray-500">Cases Under Review</p>
+            <p className="text-2xl font-bold">{cases.filter(caseItem => caseItem.status === 'inProgress').length}</p>
+          </div>
+          <div className="bg-white p-4 shadow rounded-lg text-center">
+            <p className="text-2xl font-bold text-gray-500">Resolved Cases</p>
+            <p className="text-2xl font-bold">{cases.filter(caseItem => caseItem.status === 'closed').length}</p>
+          </div>
+        
       </div>
 
       {/* Cases Under Review */}
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4">Cases Under Review</h2>
+        <h2 className="text-lg font-semibold mb-4">My Cases</h2>
         <table className="w-full table-auto border">
           <thead>
             <tr className="bg-gray-200">
@@ -59,10 +92,12 @@ export default function AdminHome() {
           <tbody>
             {cases.map((caseItem) => (
               <tr key={caseItem.id} className="text-center">
-                <td className="border px-4 py-2">{caseItem.id}</td>
                 <td className="border px-4 py-2">{caseItem.title}</td>
+                <td className="border px-4 py-2">{caseItem.description}</td>
                 <td className="border px-4 py-2">{caseItem.status}</td>
-                <td className="border px-4 py-2">{caseItem.date}</td>
+                <td className="border px-4 py-2">
+                  {new Date(caseItem.created_at).toLocaleDateString()}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -28,15 +28,15 @@ export default function Reports() {
     const normalized = status.trim().toLowerCase();
     switch (normalized) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "in review":
-        return "bg-blue-100 text-blue-800";
+        return "bg-yellow-100 text-gray-900";
+      case "inProgress":
+        return "bg-blue-100 text-gray-900";
       case "resolved":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-gray-900";
       case "rejected":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-gray-900";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-blue-400 text-gray-900";
     }
   };
 
@@ -58,7 +58,12 @@ export default function Reports() {
           <tbody>
             {reports.map((report) => (
               <tr key={report.id} className="border-t hover:bg-gray-50">
-                <td className="p-4 text-ellipsis">{report.id}</td>
+                <td className="p-4 text-ellipsis">{(() => {
+                    const id = String(report.id);
+                    const visible = id.slice(0, Math.ceil(id.length / 4));
+                    const masked = "*".repeat(id.length - visible.length);
+                    return visible + masked;
+                  })()}</td>
                 <td className="p-4">{report.title}</td>
                 <td className="p-4">{new Date(report.created_at).toLocaleDateString('en-US', {
                   year: 'numeric',
